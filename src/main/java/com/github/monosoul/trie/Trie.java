@@ -1,12 +1,16 @@
 package com.github.monosoul.trie;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
+import java.util.List;
 import java.util.Optional;
+import lombok.ToString;
 import lombok.experimental.var;
 import lombok.val;
 
+@ToString
 public class Trie {
 
 	private final TrieNode root;
@@ -15,11 +19,14 @@ public class Trie {
 		this.root = new TrieNode();
 	}
 
-	public void addWord(final CharSequence word) {
+	public void addWord(final RatingToWord ratingToWord) {
+		val word = ratingToWord.getValue();
+		val rating = ratingToWord.getKey();
+
 		val lastChar = word.length() - 1;
 		var curNode = root;
 		for (var i = 0; i < word.length(); i++) {
-			curNode = curNode.addChild(word.charAt(i));
+			curNode = curNode.addChild(word.charAt(i), rating);
 			if (i == lastChar) {
 				curNode.isWord(true);
 			}
@@ -32,6 +39,18 @@ public class Trie {
 
 	public boolean contains(final CharSequence word) {
 		return find(root, word, true).isPresent();
+	}
+
+	public List<String> getTopFor(final int top, final CharSequence prefix) {
+		val nodeOptional = find(root, prefix, false);
+
+		return nodeOptional.map(node ->
+				node.getTopChildren(top).stream()
+						.map(x -> x.insert(0, prefix))
+						.map(StringBuilder::toString)
+						.collect(toList())
+		)
+				.orElse(emptyList());
 	}
 
 	private Optional<TrieNode> find(final TrieNode node, final CharSequence word, final boolean wordsOnly) {
@@ -48,12 +67,5 @@ public class Trie {
 		}
 
 		return find(child, word.subSequence(1, word.length()), wordsOnly);
-	}
-
-	@Override
-	public String toString() {
-		return toStringHelper(this)
-				.add("root", root)
-				.toString();
 	}
 }
