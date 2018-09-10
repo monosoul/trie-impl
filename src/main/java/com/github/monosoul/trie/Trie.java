@@ -1,12 +1,14 @@
 package com.github.monosoul.trie;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import java.util.Optional;
+
+import lombok.ToString;
 import lombok.var;
 import lombok.val;
 
+@ToString
 public class Trie {
 
 	private final TrieNode root;
@@ -52,12 +54,5 @@ public class Trie {
 		}
 
 		return find(child, word.subSequence(1, word.length()), wordsOnly);
-	}
-
-	@Override
-	public String toString() {
-		return toStringHelper(this)
-				.add("root", root)
-				.toString();
 	}
 }

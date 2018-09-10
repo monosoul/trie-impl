@@ -1,9 +1,10 @@
 package com.github.monosoul.trie;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
+import lombok.ToString;
 import lombok.var;
 import lombok.val;
 
+@ToString
 public class TrieNode {
 
 	private static final int ALPHABET_SIZE = 'z' - 'a' + 1;
@@ -56,15 +57,6 @@ public class TrieNode {
 
 	private static int getIndex(final char value) {
 		return value - 'a';
-	}
-
-	@Override
-	public String toString() {
-		return toStringHelper(this)
-				.add("value", value)
-				.add("children", children)
-				.add("isWord", isWord)
-				.toString();
 	}
 }
 
