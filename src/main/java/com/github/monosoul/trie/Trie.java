@@ -15,6 +15,10 @@ public class Trie {
 		this.root = new TrieNode();
 	}
 
+	Trie(final TrieNode root) {
+		this.root = root;
+	}
+
 	public void addWord(final CharSequence word) {
 		val lastChar = word.length() - 1;
 		var curNode = root;
