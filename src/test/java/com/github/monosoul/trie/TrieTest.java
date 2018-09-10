@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import java.util.Random;
 import java.util.stream.Stream;
 import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
@@ -111,7 +110,7 @@ class TrieTest {
 	}
 
 	private static Stream<Character> characterStream() {
-		return new Random().ints('a', 'z')
+		return RANDOM.ints('a', 'z')
 				.limit(LIMIT)
 				.mapToObj(x -> (char) x);
 	}
