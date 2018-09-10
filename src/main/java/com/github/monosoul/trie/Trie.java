@@ -1,6 +1,9 @@
 package com.github.monosoul.trie;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import java.util.Optional;
 import lombok.experimental.var;
 import lombok.val;
 
@@ -24,27 +27,27 @@ public class Trie {
 	}
 
 	public boolean startsWith(final CharSequence prefix) {
-		return contains(root, prefix, false);
+		return find(root, prefix, false).isPresent();
 	}
 
 	public boolean contains(final CharSequence word) {
-		return contains(root, word, true);
+		return find(root, word, true).isPresent();
 	}
 
-	private boolean contains(final TrieNode node, final CharSequence word, final boolean wordsOnly) {
+	private Optional<TrieNode> find(final TrieNode node, final CharSequence word, final boolean wordsOnly) {
 		if (word.length() == 0) {
-			return false;
+			return empty();
 		}
 
 		val child = node.getChild(word.charAt(0));
 		if (child == null) {
-			return false;
+			return empty();
 		}
 		if (word.length() == 1 && (!wordsOnly || child.isWord())) {
-			return true;
+			return of(child);
 		}
 
-		return contains(child, word.subSequence(1, word.length()), wordsOnly);
+		return find(child, word.subSequence(1, word.length()), wordsOnly);
 	}
 
 	@Override
