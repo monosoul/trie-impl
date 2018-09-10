@@ -1,7 +1,7 @@
 package com.github.monosoul.trie;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
-import lombok.experimental.var;
+import lombok.var;
 import lombok.val;
 
 public class TrieNode {
@@ -24,6 +24,10 @@ public class TrieNode {
 
 	public boolean isRoot() {
 		return value == null;
+	}
+
+	public Character getValue() {
+		return value;
 	}
 
 	public boolean isWord() {
