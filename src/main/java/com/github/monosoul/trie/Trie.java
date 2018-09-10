@@ -4,7 +4,7 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import java.util.Optional;
-import lombok.experimental.var;
+import lombok.var;
 import lombok.val;
 
 public class Trie {
