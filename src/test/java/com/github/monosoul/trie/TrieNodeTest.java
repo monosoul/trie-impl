@@ -1,12 +1,12 @@
 package com.github.monosoul.trie;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.Random;
-import java.util.stream.Stream;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import java.util.Random;
+import java.util.stream.Stream;
 
 class TrieNodeTest {
 

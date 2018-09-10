@@ -1,8 +1,8 @@
 package com.github.monosoul.trie;
 
 import lombok.ToString;
-import lombok.var;
 import lombok.val;
+import lombok.var;
 
 @ToString
 public class TrieNode {

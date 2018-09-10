@@ -2,11 +2,10 @@ package com.github.monosoul.trie;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import java.util.Optional;
-
 import lombok.ToString;
-import lombok.var;
 import lombok.val;
+import lombok.var;
+import java.util.Optional;
 
 @ToString
 public class Trie {
