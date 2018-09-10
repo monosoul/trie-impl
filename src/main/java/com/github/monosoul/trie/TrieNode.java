@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import lombok.ToString;
-import lombok.experimental.var;
 import lombok.val;
+import lombok.var;
 
 @ToString
 public class TrieNode {
@@ -70,6 +70,10 @@ public class TrieNode {
 
 	private static int getIndex(final char value) {
 		return value - 'a';
+	}
+
+	TrieNode getWithRating(final int rating) {
+		return ratings.get(rating);
 	}
 
 	public Collection<StringBuilder> getTopChildren(final int top) {

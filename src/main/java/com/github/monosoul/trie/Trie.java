@@ -7,8 +7,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Optional;
 import lombok.ToString;
-import lombok.experimental.var;
 import lombok.val;
+import lombok.var;
 
 @ToString
 public class Trie {
@@ -19,9 +19,13 @@ public class Trie {
 		this.root = new TrieNode();
 	}
 
+	Trie(final TrieNode root) {
+		this.root = root;
+	}
+
 	public void addWord(final RatingToWord ratingToWord) {
-		val word = ratingToWord.getValue();
-		val rating = ratingToWord.getKey();
+		val word = ratingToWord.getWord();
+		val rating = ratingToWord.getRating();
 
 		val lastChar = word.length() - 1;
 		var curNode = root;
