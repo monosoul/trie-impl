@@ -1,8 +1,11 @@
 package com.github.monosoul.trie;
 
 import static java.util.Comparator.reverseOrder;
+import static java.util.stream.Collectors.toList;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.SortedMap;
+import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 import lombok.ToString;
 import lombok.val;
@@ -15,13 +18,13 @@ public class TrieNode {
 
 	private final Character value;
 	private final TrieNode[] children;
-	private final SortedMap<Integer, TrieNode> ratings;
+	private final Ratings ratings;
 	private boolean isWord;
 
 	public TrieNode(final Character value) {
 		this.value = value;
 		this.children = new TrieNode[ALPHABET_SIZE];
-		this.ratings = new TreeMap<>(reverseOrder());
+		this.ratings = new Ratings(new TreeMap<>(reverseOrder()));
 		this.isWord = false;
 	}
 
@@ -72,33 +75,36 @@ public class TrieNode {
 		return value - 'a';
 	}
 
-	TrieNode getWithRating(final int rating) {
+	Set<TrieNode> getWithRating(final int rating) {
 		return ratings.get(rating);
 	}
 
 	public Collection<StringBuilder> getTopChildren(final int top) {
-		val topItems = new TreeMap<Integer, StringBuilder>(reverseOrder());
-
-		ratings.entrySet().stream()
+		return ratings.entrySet().stream()
 				.limit(top)
-				.forEach(
-						x -> getForRating(topItems, x.getKey(), x.getValue())
-				);
-
-		return topItems.values();
+				.flatMap(entry ->
+						entry.getValue().stream().flatMap(node ->
+								getForRating(new ArrayList<>(), new StringBuilder(), entry.getKey(), node).stream()
+						)
+				)
+				.limit(top)
+				.collect(toList());
 	}
 
-	private void getForRating(final SortedMap<Integer, StringBuilder> topItems, final int rating, final TrieNode node) {
-		addChar(topItems, rating, node);
+	private List<StringBuilder> getForRating(
+			final List<StringBuilder> topItems, final StringBuilder sb, final int rating, final TrieNode node
+	) {
+		sb.append(node.getValue());
 
-		val child = node.ratings.get(rating);
-		if (child != null) {
-			getForRating(topItems, rating, child);
+		if (node.ratings.isEmpty()) {
+			topItems.add(sb);
+		} else {
+			node.ratings.get(rating).forEach(child ->
+					getForRating(topItems, new StringBuilder(sb), rating, child)
+			);
 		}
-	}
 
-	private static void addChar(final SortedMap<Integer, StringBuilder> topItems, final int rating, final TrieNode node) {
-		topItems.computeIfAbsent(rating, x -> new StringBuilder()).append(node.getValue());
+		return topItems;
 	}
 }
 

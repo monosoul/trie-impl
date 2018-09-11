@@ -2,16 +2,14 @@ package com.github.monosoul.test;
 
 import static com.github.monosoul.trie.RatingToWord.of;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.range;
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import com.github.monosoul.trie.RatingToWord;
 import com.github.monosoul.trie.Trie;
 import com.github.monosoul.trie.util.LocalRandom;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -85,12 +83,9 @@ public class TrieTestIT {
 
 	private static List<String> getTopFor(final int top, final String prefix, final List<RatingToWord> words) {
 		return words.stream().filter(x -> x.getWord().startsWith(prefix))
-				//ToDo: remove the next line after implementation of the support of multiple words with the same rating
-				.collect(toMap(RatingToWord::getRating, RatingToWord::getWord, (x, y) -> y))
-				.entrySet().stream()
-				.sorted((x, y) -> y.getKey().compareTo(x.getKey()))
+				.sorted((x, y) -> y.getRating().compareTo(x.getRating()) * 100 + x.getWord().compareTo(y.getWord()))
 				.limit(top)
-				.map(Entry::getValue)
+				.map(RatingToWord::getWord)
 				.collect(Collectors.toList());
 	}
 
