@@ -1,6 +1,6 @@
 package com.github.monosoul.trie;
 
-import static java.util.stream.IntStream.rangeClosed;
+import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyChar;
 import static org.mockito.Mockito.calls;
@@ -10,18 +10,19 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.stream.Stream;
+import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
-import java.util.Random;
-import java.util.stream.Stream;
 
 class TrieTest {
 
-	private final static int LIMIT = 10;
+	private static final LocalRandom RANDOM = new LocalRandom();
+	private static final int LIMIT = 10;
 
 	@Mock
 	private TrieNode root;
@@ -49,7 +50,7 @@ class TrieTest {
 	@ParameterizedTest
 	@MethodSource("stringStream")
 	void startsWith(final String word) {
-		val subString = word.substring(0, (new Random().nextInt(word.length() - 1) + 1));
+		val subString = word.substring(0, RANDOM.nextIntBetween(1, word.length()));
 
 		when(root.getChild(anyChar())).thenReturn(root);
 
@@ -106,15 +107,7 @@ class TrieTest {
 		assertThat(actual).isTrue();
 	}
 
-	private static Stream<Character> characterStream() {
-		return new Random().ints('a', 'z')
-				.limit(LIMIT)
-				.mapToObj(x -> (char) x);
-	}
-
 	private static Stream<String> stringStream() {
-		return rangeClosed(0, LIMIT).mapToObj(x ->
-				characterStream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()
-		);
+		return generate(RANDOM::nextAlphabeticString).limit(LIMIT);
 	}
 }

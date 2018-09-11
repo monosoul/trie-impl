@@ -1,16 +1,18 @@
 package com.github.monosoul.trie;
 
+import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
+import java.util.stream.Stream;
+import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import java.util.Random;
-import java.util.stream.Stream;
 
 class TrieNodeTest {
 
-	private final static int LIMIT = 10;
+	private static final LocalRandom RANDOM = new LocalRandom();
+	private static final int LIMIT = 10;
 
 	@Test
 	void isRoot() {
@@ -74,8 +76,6 @@ class TrieNodeTest {
 	}
 
 	private static Stream<Character> characterStream() {
-		return new Random().ints('a', 'z')
-				.limit(LIMIT)
-				.mapToObj(x -> (char) x);
+		return generate(RANDOM::nextChar).limit(LIMIT);
 	}
 }
