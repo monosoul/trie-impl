@@ -61,7 +61,7 @@ class TrieNodeTest {
 		val child = node.addChild(character, rating);
 
 		assertThat(child.getValue()).isEqualTo(character);
-		assertThat(node.getWithRating(rating)).isSameAs(child);
+		assertThat(node.getWithRating(rating)).first().isSameAs(child);
 	}
 
 	@ParameterizedTest
