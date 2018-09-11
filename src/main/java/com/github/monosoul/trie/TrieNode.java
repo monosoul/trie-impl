@@ -1,5 +1,7 @@
 package com.github.monosoul.trie;
 
+import static java.util.Arrays.stream;
+import java.util.Objects;
 import lombok.ToString;
 import lombok.val;
 import lombok.var;
@@ -53,6 +55,10 @@ public class TrieNode {
 
 	public TrieNode getChild(final char value) {
 		return children[getIndex(value)];
+	}
+
+	boolean hasChildren() {
+		return stream(children).anyMatch(Objects::nonNull);
 	}
 
 	private static int getIndex(final char value) {

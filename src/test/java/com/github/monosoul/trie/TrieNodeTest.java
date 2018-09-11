@@ -1,7 +1,9 @@
 package com.github.monosoul.trie;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
+import java.util.List;
 import java.util.stream.Stream;
 import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
@@ -75,7 +77,34 @@ class TrieNodeTest {
 		assertThat(actual.getValue()).isEqualTo(character);
 	}
 
+	@ParameterizedTest
+	@MethodSource("characterListStream")
+	void hasChildren(final List<Character> characterList) {
+		val node = new TrieNode();
+
+		characterList.forEach(node::addChild);
+
+		val actual = node.hasChildren();
+
+		assertThat(actual).isTrue();
+	}
+
+	@Test
+	void doesNotHaveChildren() {
+		val node = new TrieNode();
+
+		val actual = node.hasChildren();
+
+		assertThat(actual).isFalse();
+	}
+
 	private static Stream<Character> characterStream() {
 		return generate(RANDOM::nextChar).limit(LIMIT);
+	}
+
+	private static Stream<List<Character>> characterListStream() {
+		return generate(() ->
+				generate(RANDOM::nextChar).limit(RANDOM.nextIntBetween(1, LIMIT)).collect(toList())
+		).limit(LIMIT);
 	}
 }
