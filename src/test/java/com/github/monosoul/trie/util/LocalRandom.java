@@ -2,9 +2,9 @@ package com.github.monosoul.trie.util;
 
 import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Iterables.size;
-import static java.util.stream.IntStream.range;
 import java.util.Random;
 import lombok.val;
+import lombok.var;
 
 public class LocalRandom extends Random {
 
@@ -21,8 +21,13 @@ public class LocalRandom extends Random {
 	}
 
 	public String nextAlphabeticString(final int minLength, final int maxLength) {
-		return range(minLength, maxLength).mapToObj(x -> nextChar())
-				.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
+		val length = nextIntBetween(minLength, maxLength);
+		val sb = new StringBuilder();
+		for (var i = 0; i < length; i++) {
+			sb.append(nextChar());
+		}
+
+		return sb.toString();
 	}
 
 	public String nextAlphabeticString() {
