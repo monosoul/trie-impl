@@ -7,8 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.github.monosoul.trie.RatingToWord;
 import com.github.monosoul.trie.Trie;
 import com.github.monosoul.trie.util.LocalRandom;
+import com.github.monosoul.trie.util.Timer;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +67,7 @@ public class TrieTestIT {
 		assertThat(trie.startsWith(toFind)).isFalse();
 	}
 
-	@ParameterizedTest
+	@ParameterizedTest(name = "Iteration #{index}")
 	@MethodSource("ratingToWordListStream")
 	void getTopTenFor(final List<RatingToWord> words) {
 		val top = 10;
@@ -75,27 +75,35 @@ public class TrieTestIT {
 
 		words.forEach(trie::addWord);
 
+		val expectedTimer = new Timer();
 		val expected = getTopFor(top, prefix, words);
+		val passedPassed = expectedTimer.passedMillis();
+		System.out.println("Calculation time of expected list: " + passedPassed);
+
+		val actualTimer = new Timer();
 		val actual = trie.getTopFor(top, prefix);
+		val actualPassed = actualTimer.passedMillis();
+		System.out.println("Calculation time of actual list: " + actualPassed);
 
 		assertThat(actual).containsExactly(expected.toArray(new String[0]));
 	}
 
 	private static List<String> getTopFor(final int top, final String prefix, final List<RatingToWord> words) {
-		return words.stream().filter(x -> x.getWord().startsWith(prefix))
+		return words.stream()
+				.filter(x -> x.getWord().startsWith(prefix))
 				.sorted((x, y) -> y.getRating().compareTo(x.getRating()) * 100 + x.getWord().compareTo(y.getWord()))
 				.limit(top)
 				.map(RatingToWord::getWord)
-				.collect(Collectors.toList());
+				.collect(toList());
 	}
 
 	private static Stream<RatingToWord> ratingToWordStream() {
-		return range(0, 100).mapToObj(x ->
+		return range(0, 100000).mapToObj(x ->
 				of(RANDOM.nextIntBetween(0, 100), RANDOM.nextAlphabeticString())
 		);
 	}
 
 	private static Stream<List<RatingToWord>> ratingToWordListStream() {
-		return range(0, 100).mapToObj(x -> ratingToWordStream().collect(toList()));
+		return range(0, 10).mapToObj(x -> ratingToWordStream().collect(toList()));
 	}
 }
