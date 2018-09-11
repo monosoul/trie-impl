@@ -1,7 +1,7 @@
 package com.github.monosoul.trie;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
@@ -12,12 +12,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import com.github.monosoul.trie.util.LocalRandom;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.stream.Stream;
+import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -211,10 +211,10 @@ class TrieNodeSetTest {
 	}
 
 	private static Stream<TrieNode> nodeStream() {
-		return range(0, LIMIT).mapToObj(x -> mock(TrieNode.class));
+		return generate(() -> mock(TrieNode.class)).limit(RANDOM.nextIntBetween(1, LIMIT));
 	}
 
 	private static Stream<List<TrieNode>> nodeListStream() {
-		return range(0, LIMIT).mapToObj(x -> nodeStream().collect(toList()));
+		return generate(() -> nodeStream().collect(toList())).limit(LIMIT);
 	}
 }

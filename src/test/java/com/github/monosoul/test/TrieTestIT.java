@@ -2,14 +2,14 @@ package com.github.monosoul.test;
 
 import static com.github.monosoul.trie.RatingToWord.of;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
+import java.util.List;
+import java.util.stream.Stream;
 import com.github.monosoul.trie.RatingToWord;
 import com.github.monosoul.trie.Trie;
 import com.github.monosoul.trie.util.LocalRandom;
 import com.github.monosoul.trie.util.Timer;
-import java.util.List;
-import java.util.stream.Stream;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class TrieTestIT {
 
 	private static final LocalRandom RANDOM = new LocalRandom();
+	private static final int LIMIT = 10;
 
 	private Trie trie;
 
@@ -98,12 +99,11 @@ public class TrieTestIT {
 	}
 
 	private static Stream<RatingToWord> ratingToWordStream() {
-		return range(0, 100000).mapToObj(x ->
-				of(RANDOM.nextIntBetween(0, 100), RANDOM.nextAlphabeticString())
-		);
+		return generate(() -> of(RANDOM.nextIntBetween(0, 100), RANDOM.nextAlphabeticString()))
+				.limit(100000);
 	}
 
 	private static Stream<List<RatingToWord>> ratingToWordListStream() {
-		return range(0, 10).mapToObj(x -> ratingToWordStream().collect(toList()));
+		return generate(() -> ratingToWordStream().collect(toList())).limit(LIMIT);
 	}
 }

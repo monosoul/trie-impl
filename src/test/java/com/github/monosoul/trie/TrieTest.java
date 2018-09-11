@@ -1,7 +1,7 @@
 package com.github.monosoul.trie;
 
 import static com.github.monosoul.trie.RatingToWord.of;
-import static java.util.stream.IntStream.rangeClosed;
+import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyChar;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -109,19 +109,11 @@ class TrieTest {
 		assertThat(actual).isTrue();
 	}
 
-	private static Stream<Character> characterStream() {
-		return RANDOM.ints('a', 'z')
-				.limit(LIMIT)
-				.mapToObj(x -> (char) x);
-	}
-
 	private static Stream<String> stringStream() {
-		return rangeClosed(0, LIMIT).mapToObj(x ->
-				characterStream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()
-		);
+		return generate(RANDOM::nextAlphabeticString).limit(LIMIT);
 	}
 
 	private static Stream<RatingToWord> ratingToWordStream() {
-		return stringStream().map(x -> of(RANDOM.nextInt(), x));
+		return generate(() -> of(RANDOM.nextInt(), RANDOM.nextAlphabeticString())).limit(LIMIT);
 	}
 }

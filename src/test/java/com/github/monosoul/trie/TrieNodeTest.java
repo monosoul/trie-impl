@@ -1,6 +1,6 @@
 package com.github.monosoul.trie;
 
-import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.stream.Stream;
 import com.github.monosoul.trie.util.LocalRandom;
@@ -95,7 +95,7 @@ class TrieNodeTest {
 
 	private static char getRandomButNot(final char notChar) {
 		var randomChar = RANDOM.nextChar();
-		while(randomChar == notChar) {
+		while (randomChar == notChar) {
 			randomChar = RANDOM.nextChar();
 		}
 
@@ -103,14 +103,10 @@ class TrieNodeTest {
 	}
 
 	private static Stream<Character> characterStream() {
-		return RANDOM.ints('a', 'z')
-				.limit(LIMIT)
-				.mapToObj(x -> (char) x);
+		return generate(RANDOM::nextChar).limit(LIMIT);
 	}
 
 	private static Stream<Arguments> charAndRatingStream() {
-		return range(0, LIMIT).mapToObj(x -> () ->
-				new Object[]{RANDOM.nextChar(), RANDOM.nextInt()}
-		);
+		return generate(() -> (Arguments) () -> new Object[]{RANDOM.nextChar(), RANDOM.nextInt()}).limit(LIMIT);
 	}
 }

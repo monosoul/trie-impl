@@ -1,7 +1,7 @@
 package com.github.monosoul.trie;
 
 import static java.util.Collections.emptySet;
-import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.ArgumentCaptor.forClass;
@@ -9,17 +9,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import com.github.monosoul.trie.util.LocalRandom;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ class RatingsTest {
 		val trieNodeSet = mock(TrieNodeSet.class);
 		val funCaptor = forClass(Function.class);
 
-		when(internalMap.computeIfAbsent(anyInt(), any(Function.class))).thenReturn(trieNodeSet);
+		doReturn(trieNodeSet).when(internalMap).computeIfAbsent(anyInt(), any(Function.class));
 
 		ratings.put(rating, node);
 
@@ -68,7 +69,7 @@ class RatingsTest {
 	void get(final Integer rating) {
 		val entrySet = mock(Set.class);
 
-		when(internalMap.getOrDefault(anyInt(), anySet())).thenReturn(entrySet);
+		doReturn(entrySet).when(internalMap).getOrDefault(anyInt(), anySet());
 
 		val actual = ratings.get(rating);
 
@@ -106,11 +107,11 @@ class RatingsTest {
 	}
 
 	private static Stream<Arguments> ratingAndTrieNodeStream() {
-		return range(0, LIMIT).mapToObj(x -> () -> {
+		return generate(() -> (Arguments) () -> {
 			val node = mock(TrieNode.class);
 			when(node.getValue()).thenReturn(RANDOM.nextChar());
 
 			return new Object[]{RANDOM.nextInt(), node};
-		});
+		}).limit(LIMIT);
 	}
 }
