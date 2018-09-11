@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.stream.Stream;
 import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
+import lombok.var;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -64,6 +65,21 @@ class TrieNodeTest {
 		assertThat(node.getWithRating(rating)).first().isSameAs(child);
 	}
 
+	@Test
+	void addMultipleChildrenWithTheSameRating() {
+		val rating = RANDOM.nextInt();
+		val char1 = RANDOM.nextChar();
+		val char2 = getRandomButNot(char1);
+
+		val node = new TrieNode();
+		val child1 = node.addChild(char1, rating);
+		val child2 = node.addChild(char2, rating);
+
+		val nodeSet = node.getWithRating(rating);
+
+		assertThat(nodeSet).containsExactlyInAnyOrder(child1, child2);
+	}
+
 	@ParameterizedTest
 	@MethodSource("characterStream")
 	void getChild(final Character character) {
@@ -75,6 +91,15 @@ class TrieNodeTest {
 		assertThat(actual).isNotNull()
 				.isSameAs(expected);
 		assertThat(actual.getValue()).isEqualTo(character);
+	}
+
+	private static char getRandomButNot(final char notChar) {
+		var randomChar = RANDOM.nextChar();
+		while(randomChar == notChar) {
+			randomChar = RANDOM.nextChar();
+		}
+
+		return randomChar;
 	}
 
 	private static Stream<Character> characterStream() {
