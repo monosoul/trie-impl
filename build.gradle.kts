@@ -3,6 +3,7 @@ version = "1.0"
 
 plugins {
     java
+    jacoco
 }
 
 apply {
@@ -23,6 +24,18 @@ dependencies {
     testCompile("org.mockito:mockito-core:2.21.0")
     compile("org.projectlombok:lombok:1.18.2")
     compile("com.google.guava:guava:24.1-jre")
+}
+
+tasks {
+    "jacocoTestReport"(JacocoReport::class) {
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = false
+        }
+
+        val check by tasks
+        check.dependsOn(this)
+    }
 }
 
 repositories {
