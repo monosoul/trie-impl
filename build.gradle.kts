@@ -14,10 +14,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+val junitVersion = "5.3.1"
 dependencies {
-    testCompile("org.junit.jupiter:junit-jupiter-api:5.1.0")
-    testCompile("org.junit.jupiter:junit-jupiter-params:5.1.0")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.1.0")
+    testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testCompile("org.junit.jupiter:junit-jupiter-params:$junitVersion")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testCompile("org.assertj:assertj-core:3.9.1")
     testCompile("org.mockito:mockito-core:2.21.0")
     compile("org.projectlombok:lombok:1.18.2")
@@ -34,6 +35,6 @@ buildscript {
     }
 
     dependencies{
-        classpath("org.junit.platform:junit-platform-gradle-plugin:1.1.0")
+        classpath("org.junit.platform:junit-platform-gradle-plugin:1.2.0")
     }
 }
