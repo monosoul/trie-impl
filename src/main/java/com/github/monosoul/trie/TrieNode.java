@@ -1,23 +1,17 @@
 package com.github.monosoul.trie;
 
-import static java.util.Arrays.stream;
-import java.util.Objects;
 import lombok.ToString;
-import lombok.val;
-import lombok.var;
 
 @ToString
 public class TrieNode {
 
-	private static final int ALPHABET_SIZE = 'z' - 'a' + 1;
-
 	private final Character value;
-	private final TrieNode[] children;
+	private final Children children;
 	private boolean isWord;
 
 	public TrieNode(final Character value) {
 		this.value = value;
-		this.children = new TrieNode[ALPHABET_SIZE];
+		this.children = new Children('a', 'z');
 		this.isWord = false;
 	}
 
@@ -43,26 +37,19 @@ public class TrieNode {
 	}
 
 	public TrieNode addChild(final char value) {
-		val index = getIndex(value);
-		var child = children[index];
-		if (child == null) {
-			child = new TrieNode(value);
-			children[index] = child;
-		}
-
-		return child;
+		return children.computeIfAbsent(value, x -> new TrieNode(value));
 	}
 
 	public TrieNode getChild(final char value) {
-		return children[getIndex(value)];
+		return children.get(value);
+	}
+
+	public void removeChild(final char value) {
+		children.remove(value);
 	}
 
 	boolean hasChildren() {
-		return stream(children).anyMatch(Objects::nonNull);
-	}
-
-	private static int getIndex(final char value) {
-		return value - 'a';
+		return !children.isEmpty();
 	}
 }
 

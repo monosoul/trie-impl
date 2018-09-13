@@ -78,6 +78,27 @@ class TrieNodeTest {
 	}
 
 	@ParameterizedTest
+	@MethodSource("characterStream")
+	void removeExistingChild(final Character character) {
+		val node = new TrieNode();
+		node.addChild(character);
+
+		node.removeChild(character);
+
+		assertThat(node.getChild(character)).isNull();
+	}
+
+	@ParameterizedTest
+	@MethodSource("characterStream")
+	void removeNonExistentChild(final Character character) {
+		val node = new TrieNode();
+
+		node.removeChild(character);
+
+		assertThat(node.getChild(character)).isNull();
+	}
+
+	@ParameterizedTest
 	@MethodSource("characterListStream")
 	void hasChildren(final List<Character> characterList) {
 		val node = new TrieNode();
