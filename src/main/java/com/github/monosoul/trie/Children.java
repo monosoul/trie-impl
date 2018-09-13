@@ -1,5 +1,7 @@
 package com.github.monosoul.trie;
 
+import static java.util.Arrays.stream;
+import java.util.Objects;
 import java.util.function.Function;
 import lombok.NonNull;
 import lombok.ToString;
@@ -38,5 +40,9 @@ public class Children {
 
 	public void remove(final char character) {
 		childrenArr[getIndex.apply(character)] = null;
+	}
+
+	public boolean isEmpty() {
+		return stream(childrenArr).noneMatch(Objects::nonNull);
 	}
 }

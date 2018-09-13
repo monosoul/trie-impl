@@ -1,5 +1,6 @@
 package com.github.monosoul.trie;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyChar;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import com.github.monosoul.trie.util.LocalRandom;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import lombok.val;
@@ -96,8 +98,27 @@ class ChildrenTest {
 		assertThat(actual).isNull();
 	}
 
+	@Test
+	void isEmpty() {
+		assertThat(children.isEmpty()).isTrue();
+	}
+
+	@ParameterizedTest
+	@MethodSource("trieNodeListStream")
+	void isNotEmpty(final List<TrieNode> nodeList) {
+		nodeList.forEach(children::put);
+
+		assertThat(children.isEmpty()).isFalse();
+	}
+
 	private static Stream<TrieNode> trieNodeStream() {
 		return generate(() -> nodeMockFor(RANDOM.nextCharBetween(ALPHABET_START, ALPHABET_END))).limit(LIMIT);
+	}
+
+	private static Stream<List<TrieNode>> trieNodeListStream() {
+		return generate(() ->
+				trieNodeStream().limit(RANDOM.nextIntBetween(1, LIMIT)).collect(toList())
+		).limit(LIMIT);
 	}
 
 	private static Stream<Arguments> nodeAndCharStream() {
