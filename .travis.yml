@@ -1,7 +1,8 @@
 language: java
 
-before_install:
-- pip install --user codecov
+script:
+- ./gradlew check
+- ./gradlew jacocoTestReport
 
 after_success:
-- codecov
+- bash <(curl -s https://codecov.io/bash)
