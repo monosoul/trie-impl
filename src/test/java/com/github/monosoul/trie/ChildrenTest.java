@@ -10,10 +10,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import com.github.monosoul.trie.util.LocalRandom;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import com.github.monosoul.trie.util.LocalRandom;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,6 +76,22 @@ class ChildrenTest {
 				.isSameAs(node);
 	}
 
+	@SuppressWarnings("unchecked")
+	@ParameterizedTest
+	@MethodSource("charStream")
+	void computeIfAbsentAndProviderReturnedNull(final char character) {
+		val nodeProvider = mock(Function.class);
+		when(nodeProvider.apply(anyChar())).thenReturn(null);
+
+		val actual = children.computeIfAbsent(character, nodeProvider);
+
+		verify(nodeProvider).apply(character);
+		verifyNoMoreInteractions(nodeProvider);
+
+		assertThat(actual).isNull();
+		assertThat(children.get(character)).isNull();
+	}
+
 	@ParameterizedTest
 	@MethodSource("nodeAndCharStream")
 	void get(final TrieNode node, final char character) {
@@ -109,6 +125,10 @@ class ChildrenTest {
 		nodeList.forEach(children::put);
 
 		assertThat(children.isEmpty()).isFalse();
+	}
+
+	private static Stream<Character> charStream() {
+		return generate(() -> RANDOM.nextCharBetween(ALPHABET_START, ALPHABET_END)).limit(LIMIT);
 	}
 
 	private static Stream<TrieNode> trieNodeStream() {
