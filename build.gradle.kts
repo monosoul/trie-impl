@@ -6,10 +6,6 @@ plugins {
     jacoco
 }
 
-apply {
-    plugin("org.junit.platform.gradle.plugin")
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -17,7 +13,7 @@ java {
 
 val junitVersion = "5.3.1"
 dependencies {
-    testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testCompile("org.assertj:assertj-core:3.9.1")
@@ -36,18 +32,11 @@ tasks {
         val check by tasks
         check.dependsOn(this)
     }
+    "test"(Test::class) {
+        useJUnitPlatform()
+    }
 }
 
 repositories {
     jcenter()
-}
-
-buildscript {
-    repositories{
-        jcenter()
-    }
-
-    dependencies{
-        classpath("org.junit.platform:junit-platform-gradle-plugin:1.2.0")
-    }
 }
