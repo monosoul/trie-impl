@@ -3,6 +3,7 @@ package com.github.monosoul.trie;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyChar;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -90,6 +91,12 @@ class ChildrenTest {
 
 		assertThat(actual).isNull();
 		assertThat(children.get(character)).isNull();
+	}
+
+	@Test
+	void computeIfAbsentAndProviderIsNull() {
+		assertThatThrownBy(() -> children.computeIfAbsent(RANDOM.nextChar(), null))
+				.isInstanceOf(NullPointerException.class);
 	}
 
 	@ParameterizedTest
